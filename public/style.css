@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  height: 100vh;
+  display: flex;
+}
+
+.main__left {
+  flex: 0.8;
+  display: flex;
+  flex-direction: column;
+}
+
+.main__right {
+  flex: 0.2;
+}
+
+.main__videos {
+  align-items: center;
+  flex-grow: 1;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+}
+
+#video-grid {
+  display: flex;
+  justify-content: center;
+}
+
+video {
+  height: 300px;
+  width: 400px;
+  object-fit: cover;
+}
