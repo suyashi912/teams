@@ -1,8 +1,3 @@
-//const { connect } = require("http2");
-
-// const Peer = require("peerjs");
-
-// const { Socket } = require("dgram");
 const socket = io('/'); 
 const videoGrid = document.getElementById("video-grid"); 
 const myVideo = document.createElement("video");
@@ -14,18 +9,22 @@ var peer = new Peer(undefined, {
     port: '3030'
 });
 
-
+var peers = {}
+var str = {}
+var c = 0
+var number = 0
 let myVideoStream
+
 navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true
 }).then(stream => {
     myVideoStream = stream;
+    console.log(stream); 
     addVideoStream(myVideo, stream);
-    
+   
     peer.on('call', call => {
-        console.log("answer call ")
-
+        console.log(number,'answer', c); 
         call.answer(stream);
         const video = document.createElement('video');
         call.on('stream', userVideoStream => {
@@ -34,35 +33,59 @@ navigator.mediaDevices.getUserMedia({
     })
 
     socket.on('user-connected', (userId) => {
+        peers[number++] = userId;
         connectToNewUser(userId, stream);
+        console.log(number,'userS', c); 
         console.log("connect new user"); 
+    })
+
+    let msg = $('input')
+    console.log(msg)
+
+    $('html').keydown((e) => {
+        if (e.which == 13 && msg.val().length !== 0)
+        {
+            console.log(msg.val())
+            socket.emit('message', msg.val());
+            msg.val('');
+            scrollToBottom(); 
+        }
+    })
+    
+    socket.on('createMessage', message => {
+        console.log('this is coming from server', message);
+        $('ul').append(`<li class="messages"><b>user\n</b>${message}</li>`);
     })
     
 }); 
 
 peer.on('open', id => {
-    socket.emit('join-room', ROOM_ID , id); 
+
+    peers[number++] = id; 
+    socket.emit('join-room', ROOM_ID, id);
+    console.log(number, 'open', c); 
 })
   
 
 const connectToNewUser = (userId, stream) => {
     var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-    getUserMedia({ video: true, audio: false }, function(stream) {
-        var call = peer.call(userId, stream);
+    getUserMedia({ video: true, audio: false }, function (stream) {
+        str[c++] = stream;
+        for (let i = 0; i < c; i++) {
+            console.log(str[i]); 
+            var call = peer.call(userId, str[i]);
+        }
+        
         const video = document.createElement('video');
-        call.on('stream', function(remoteStream) {
-            addVideoStream(video, remoteStream);
+        call.on('stream', function (remoteStream) {
+                addVideoStream(video, remoteStream);
         });
+        
+        console.log(number);
+        console.log(number, 'connect', c);
     }, function(err) {
         console.log('Failed to get local stream' ,err);
 });
-//     const call = peer.call(userId, stream);
-//     console.log(call);
-//     const video = document.createElement('video');
-//     call.on('stream', userVideoStream => {
-//         addVideoStream(video, userVideoStream);
-//     })
-//     console.log("ewfjoe");
  }
 
 
@@ -73,3 +96,30 @@ const addVideoStream = (video, stream) => {
     })
     videoGrid.append(video);
 }
+
+var scrollToBottom = () => {
+    let d = $('.main__chat_window');
+    d.scrollTop(d.prop("scrollHeight")); 
+}
+
+const muteUnmute = () => {
+    const enabled = myVideoStream.getAudioTracks()[0].enabled;
+    if (enabled) {
+        myVideoStream.getAudioTracks()[0].enabled = false;
+    }
+    else
+    {
+        myVideoStream.getAudioTracks()[0].enabled = true; 
+    }
+}
+
+const videomuteUnmute = () => {
+    const enabled = myVideoStream.getVideoTracks()[0].enabled;
+    if (enabled) {
+        myVideoStream.getVideoTracks()[0].enabled = false;
+    }
+    else
+    {
+        myVideoStream.getVideoTracks()[0].enabled = true; 
+    }
+    }
