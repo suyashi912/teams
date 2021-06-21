@@ -9,10 +9,6 @@ var peer = new Peer(undefined, {
     port: '443'
 });
 
-var peers = {}
-var str = {}
-var c = 0
-var number = 0
 let myVideoStream
 
 navigator.mediaDevices.getUserMedia({
@@ -20,11 +16,10 @@ navigator.mediaDevices.getUserMedia({
     audio: true
 }).then(stream => {
     myVideoStream = stream;
-    console.log(stream); 
     addVideoStream(myVideo, stream);
    
     peer.on('call', call => {
-        console.log(number,'answer', c); 
+
         call.answer(stream);
         const video = document.createElement('video');
         call.on('stream', userVideoStream => {
@@ -33,10 +28,7 @@ navigator.mediaDevices.getUserMedia({
     })
 
     socket.on('user-connected', (userId) => {
-        peers[number++] = userId;
         connectToNewUser(userId, stream);
-        console.log(number,'userS', c); 
-        console.log("connect new user"); 
     })
 
     let msg = $('input')
@@ -61,28 +53,20 @@ navigator.mediaDevices.getUserMedia({
 
 peer.on('open', id => {
 
-    peers[number++] = id; 
     socket.emit('join-room', ROOM_ID, id);
-    console.log(number, 'open', c); 
 })
   
 
 const connectToNewUser = (userId, stream) => {
     var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     getUserMedia({ video: true, audio: false }, function (stream) {
-        str[c++] = stream;
-        for (let i = 0; i < c; i++) {
-            console.log(str[i]); 
-            var call = peer.call(userId, str[i]);
-        }
-        
+        var call = peer.call(userId, stream); 
         const video = document.createElement('video');
         call.on('stream', function (remoteStream) {
                 addVideoStream(video, remoteStream);
         });
         
-        console.log(number);
-        console.log(number, 'connect', c);
+
     }, function(err) {
         console.log('Failed to get local stream' ,err);
 });
@@ -122,4 +106,4 @@ const videomuteUnmute = () => {
     {
         myVideoStream.getVideoTracks()[0].enabled = true; 
     }
-    }
+}
