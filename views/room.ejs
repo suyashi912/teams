@@ -12,59 +12,77 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
     <script>
         const ROOM_ID  = "<%= roomId %>"; 
     </script>
     <script src="script.js" defer> </script> 
+    <script src="controls.js" defer > </script> 
 </head>
 <body>
     <div class = "main">
         <div class = "main__left">
                 <div class = "main__videos">
-                    <div id = "video-grid">
+                    <div id = "video-grid" class="raise">
                     </div>
                 </div>
                 <div class = "main__controls">
                     <div class="main__controls__block">
-                        <div onclick = "muteUnmute()" class ="main__controls__button">
+                        <div onclick = "muteUnmute()" class ="main__controls__button  mic">
                             <i class="material-icons">mic</i>
                             <span> Mute </span>
                         </div>
-                        <div onclick = "videomuteUnmute()" class = "main__controls__button">
+                        <div onclick = "videomuteUnmute()" class = "main__controls__button video">
                             <i class="material-icons">videocam</i>
                             <span>Stop Video</span>
                         </div>
                     </div>
-
                     <div class="main__controls__block">
-                        <div class ="main__controls__button">
-                            <i class="material-icons">verified_user</i>
-                            <span> Security </span>
-                        </div>
-                        <div class = "main__controls__button">
+                        <div class = "main__controls__button" onclick="display_participants()">
                             <i class="material-icons">people</i>
                             <span>Participants</span>
                         </div>
-                        <div class = "main__controls__button">
-                            <i class="material-icons">chat</i>
-                            <span>Chat</span>
+                        <div class = "main__controls__button" onclick="shareScreen()">
+                            <i class="material-icons">screen_share</i>
+                            <span>Screen Share</span>
                         </div>
-                    </div>
+                        <div class = "main__controls__button" onclick="raiseHand()">
+                            <i class = "material-icons"> front_hand </i>
+                            <span> Raise Hand </span>
+                        </div>
 
+                        <form action="/jamBoard" method="get" target="_blank">
+                        <button type="submit" style=" background-color: transparent; border: transparent; ">
+                        <div class = "main__controls__button" color = "white">
+                            <i class="material-icons" >article</i> 
+                            <span>Jam Board</span>
+                        </div>
+                        </button>
+                    </form>
+                    <form action="/personal_board" method="get" target="_blank">
+                    <button type="submit" style=" background-color: transparent; border: transparent; ">
+                    <div class = "main__controls__button" color = "white">
+                        <i class="material-icons" >article</i> 
+                        <span>Personal Board</span>
+                    </div>
+                </button>
+                </form>
+            </div>
                     <div class="main__controls__block">
-                        <div class ="main__controls__button">
+                        <form action="/login"  method="get" >
+                            <button type="submit" style = " background-color: transparent; border: transparent; ">
+                        <div class ="main__controls__button" >
                             <i class="material-icons">call_end</i>
                             <span class ="leave_meeting"> Leave Call </span>
                         </div>
+                        </button>
+                </form>               
                     </div>
-                    
                 </div>
             </div>
         <div class = "main__right">
             <div class = "main__header">
-                <h6>Chat!!</h6>
+                 <h4><b>CHAT</b></h4> 
             </div>
             <div class="main__chat_window">
                 <ul class="messages">
@@ -75,10 +93,7 @@
             </div>
         </div>
     </div>
-  
-
 </body>
 </html>
-
 
 
